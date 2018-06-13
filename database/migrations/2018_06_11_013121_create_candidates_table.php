@@ -15,6 +15,10 @@ class CreateCandidatesTable extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name', 100);
+            $table->string('party', 100);
+            $table->string('race', 100);
+            $table->boolean('incumbent');
             $table->timestamps();
         });
     }

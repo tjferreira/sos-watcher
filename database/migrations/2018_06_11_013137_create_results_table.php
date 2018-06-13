@@ -15,6 +15,10 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('race_id');
+            $table->integer('candidate_id');
+            $table->bigInteger('votes');
+            $table->decimal('percentage', 5, 2);
             $table->timestamps();
         });
     }

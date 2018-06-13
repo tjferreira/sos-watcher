@@ -31,7 +31,7 @@
         @forelse ($candidates as $candidateRow)
             <tr>
                 <td><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>">{{ $candidateRow->race }}</td>
-                <td><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>/candidates/<?=str_replace('.', '|', $candidateRow->name)?>">{{ $candidateRow->name }}</a></td>
+                <td><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>/candidates/<?=str_replace('"', '_',str_replace('.', '|', $candidateRow->name))?>">{{ $candidateRow->name }}</a></td>
                 <td style="text-align: right;">{{ number_format($candidateRow->sumVotes,0) }}</td>
             </tr>
         @empty

@@ -68,6 +68,7 @@ Route::get('/races/{race}', function ($race) {
 Route::get('/races/{race}/candidates/{candidate}', function ($race, $candidate) {
     //Candidate details
     $candidate = str_replace('|', '.', $candidate);
+    $candidate = str_replace('_', '"', $candidate);
     $race = str_replace('|', '/', $race);
     $candidateRow = DB::table('candidates')
         ->where(['race' => $race, 'name' => $candidate])

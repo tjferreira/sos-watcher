@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Inquery;
+use App\Candidate;
 use App\County;
+use App\Inquery;
+use App\Race;
+use App\Result;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\GuzzleException;
@@ -50,12 +53,10 @@ class CheckSoS extends Command
 
         $lastInquery = Inquery::orderBy('created_at', 'desc')->take(1)->first();
         if($lastInquery == null) {
-            $lastReportTimestamp = 201806111929;
+            $lastReportTimestamp = 201806050001;
         } else {
             $lastReportTimestamp = $lastInquery->lastUpdate;
         }
-
-        $lastReportTimestamp = 201806111929;
 
         $client = new Client();
         $result = $client->request('GET', $STATUS_URL);
@@ -71,15 +72,16 @@ class CheckSoS extends Command
             $inquery->response = $rawBody;
             $inquery->save();
 
-            if($lastReportTimestamp == $newReportTimestamp) {
+            if($lastReportTimestamp >= $newReportTimestamp) {
                 $this->info("No Updates since " . $lastReportTimestamp);
             } else {
-                $this->info("Updates Found");
+                $this->info("Updates Found " . $newReportTimestamp . " > " . $lastReportTimestamp);
                 $countyList = [];
                 foreach($body as $key => $value) {
                     if($key != "statewide") {
                         if($value->lastReportTimestamp >= $lastReportTimestamp) {
                             $countyList[] = $key;
+                            $this->info($key . " " . $value->lastReportTimestamp);
                         }
                     }
                 }
@@ -259,15 +261,14 @@ class CheckSoS extends Command
 
                     $storeCountyRacePair = false;
                     //TODO: Should scrub county before using it in a query since it comes from an outside source
-                    $currentCounty = County::where('name', $county)->first();
-                    if($currentCounty == null) {
-                        $currentCounty = new County;
-                        $currentCounty->name = $county;
-                        $currentCounty->save();
-                        $storeCountyRacePair = true;
-                        $raceList = $defaultRaceList;
+                    $currentCounty = County::firstOrCreate(['name' => $county]);
+
+                    $raceList = [];
+                    if(count($currentCounty->races)) {
+                        foreach($currentCounty->races as $race) {
+                            $raceList[] = $race->name;
+                        }
                     } else {
-                        //TODO: Build $raceList from county - race pair in database
                         $raceList = $defaultRaceList;
                     }
 
@@ -278,19 +279,43 @@ class CheckSoS extends Command
 
                             if($result->getStatusCode() == 200) {
 
-                                if($storeCountyRacePair) {
-                                    //TODO: store county - race pair in database for later
-                                }
-
                                 $body = json_decode($result->getBody());
-
-                                dd($body);
 
                                 if(isset($body->candidates)) {
 
-                                    //TODO: store candidate data in database
-                                    $this->info($county . " " . $race . " " .count($body->candidates));
-                                    dd($body->candidates);
+                                    $currentRace = Race::firstOrCreate(
+                                        ['name' => $race
+                                        ,'county_id' => $currentCounty->id
+                                        ],
+                                        ['title' => $body->raceTitle
+                                        ,'reporting' => $body->Reporting
+                                        ,'reportingTime' => $body->ReportingTime
+                                        ,'candidateCount' => count($body->candidates)
+                                        ]
+                                    );
+
+                                    foreach($body->candidates as $candidate) {
+                                        $currentCandidate = Candidate::updateOrCreate(
+                                            ['name' => $candidate->Name
+                                            ,'race' => $currentRace->name
+                                            ],
+                                            ['party' => $candidate->Party
+                                            ,'incumbent' => $candidate->incumbent
+                                            ]
+                                        );
+
+                                        $currentCandidate->counties()->attach($currentCounty);
+                                        $currentCandidate->races()->attach($currentRace);
+
+                                        $currentResult = Result::updateOrCreate(
+                                            ['race_id' => $currentRace->id
+                                            ,'candidate_id' => $currentCandidate->id
+                                            ],
+                                            ['votes' => str_replace(",", "", $candidate->Votes)
+                                            ,'percentage' => $candidate->Percent
+                                            ]
+                                        );
+                                    }
                                 }
                             }            
                         } catch (ServerException $e) {

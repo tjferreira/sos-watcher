@@ -13,7 +13,10 @@
 
 Route::get('/', function () {
     //Home page
-    return view('welcome');
+    $lastUpdate = Carbon\Carbon::parse(DB::table('inqueries')->max('lastUpdate'))->diffForHumans();
+    $lastCheck = Carbon\Carbon::parse(DB::table('inqueries')->max('created_at'))->diffForHumans();
+    $data = compact('lastUpdate', 'lastCheck');
+    return View::make('welcome', $data);
 });
 
 Route::get('/parties', function () {
@@ -64,6 +67,7 @@ Route::get('/races/{race}', function ($race) {
 
 Route::get('/races/{race}/candidates/{candidate}', function ($race, $candidate) {
     //Candidate details
+    $candidate = str_replace('|', '.', $candidate);
     $race = str_replace('|', '/', $race);
     $candidateRow = DB::table('candidates')
         ->where(['race' => $race, 'name' => $candidate])

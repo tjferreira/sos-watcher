@@ -44,8 +44,12 @@
 
                 <h2>Brief Analysis</h2>
                 <p>As of June 12, the turnout is reported at 30%. Given the 141k registered Libertarians in the state, we can assume about 42.5k Libertarians voted. Any statewide candidate above 42.5k most likely attracted non-Libertarian voters. For sure, any statewide candidate above 141k attracted non-Libertarian voters. I'm still working on the code to calculate these numbers on the fly for non-statewide candidates. My full analysis will wait until the data and code is finalized, but browse and draw some of your own conclusions while we wait.</p>
+
+                <p>Last update posted to SOS Website: {{$lastUpdate}}. Last check of SOS Website: {{$lastCheck}}.</p>
+
                 <p><a href="/parties/lib">All Libertarian Candidates</a></p>
                 <p><a href="/races">All Races</a></p>
+                <p><a href="/parties">All Parties</a></p>
 
                 <h2>History</h2>
                 <p>On election night (June 5th, 2018) I was refreshing California Secretary of State webpages every 30 minutes or so to see real-time results. The next day, I was downloading csv files to analyze the results. However, the results were constantly changing and the processes of downloading was becoming tedious. Then I noticed the pattern in the csv file URLs and I wrote a script to downlaod the results for me. Then I noticed that the csv download was using an <a href="https://api.sos.ca.gov/">API</a> endpoint. I visited that endpoint and there was a full blown API for downloding results.</p>

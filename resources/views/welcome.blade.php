@@ -45,7 +45,7 @@
                 <h2>Brief Analysis</h2>
                 <p>As of June 12, the turnout is reported at 30%. Given the 141k registered Libertarians in the state, we can assume about 42.5k Libertarians voted. Any statewide candidate above 42.5k most likely attracted non-Libertarian voters. For sure, any statewide candidate above 141k attracted non-Libertarian voters. I'm still working on the code to calculate these numbers on the fly for non-statewide candidates. My full analysis will wait until the data and code is finalized, but browse and draw some of your own conclusions while we wait.</p>
 
-                <p>Last update posted to SOS Website: {{$lastUpdate}}. Last check of SOS Website: {{$lastCheck}}.</p>
+                <p>Last update posted to SOS Website: {{ $lastUpdateAbsolute }} ({{ $lastUpdate}}). Last check of SOS Website: {{$lastCheck}}.</p>
 
                 <p><a href="/parties/lib">All Libertarian Candidates</a></p>
                 <p><a href="/races">All Races</a></p>

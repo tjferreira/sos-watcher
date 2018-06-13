@@ -13,9 +13,10 @@
 
 Route::get('/', function () {
     //Home page
-    $lastUpdate = Carbon\Carbon::parse(DB::table('inqueries')->max('lastUpdate'))->diffForHumans();
+    $lastUpdateAbsolute =Carbon\Carbon::createFromFormat('YmdHi', DB::table('inqueries')->max('lastUpdate'), 'America/Los_Angeles')->toDateTimeString();
+    $lastUpdate =Carbon\Carbon::createFromFormat('YmdHi', DB::table('inqueries')->max('lastUpdate'), 'America/Los_Angeles')->diffForHumans();
     $lastCheck = Carbon\Carbon::parse(DB::table('inqueries')->max('created_at'))->diffForHumans();
-    $data = compact('lastUpdate', 'lastCheck');
+    $data = compact('lastUpdateAbsolute', 'lastUpdate', 'lastCheck');
     return View::make('welcome', $data);
 });
 

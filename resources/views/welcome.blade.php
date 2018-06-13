@@ -12,12 +12,12 @@
             html, body {
                 background-color: #fff;
                 color: #636b6f;
-                height: 100vh;
+                min-height: 100vh;
                 margin: 0;
             }
 
             .full-height {
-                height: 100vh;
+                min-height: 100vh;
             }
 
             .flex-center {
@@ -32,7 +32,7 @@
 
             .content {
                 text-align: center;
-                padding: 0 25%;
+                padding: 0 20%;
             }
 
         </style>

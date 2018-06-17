@@ -28,15 +28,17 @@ Route::get('/parties', function () {
 });
 
 Route::get('/parties/{party}', function ($party) {
-    //List of candidates by party
-    $candidates = DB::table('candidates')
-        ->select('candidates.name', 'candidates.race', DB::raw('sum(results.votes) as sumVotes'))
-        ->where('party', $party)
-        ->leftJoin('results', 'candidates.id', '=', 'results.candidate_id')
-        ->orderBy('race', 'asc')
-        ->groupBy('candidates.name', 'candidates.race')
-        ->get();
-    $data = compact('party', 'candidates');
+    //List of candidates by party and then sumup votes for whole state
+    $candidates = App\Candidate::with('results.race.county')->where('party', $party)->get();
+    foreach($candidates as $candidate) {
+        $sumVotes = 0;
+        foreach($candidate->results as $result) {
+            $sumVotes += $result->votes;
+        }
+        $candidate->sumVotes = $sumVotes;
+    }
+    $counties = App\County::get();
+    $data = compact('party', 'candidates', 'counties');
     return View::make('party', $data);
 });
 

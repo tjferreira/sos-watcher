@@ -21,7 +21,7 @@
         </style>
     </head>
     <body>
-    <h1>{{ $candidate }}</h1>
+    <h3>{{ $candidate }}</h3>
     <table>
         <tr>
             <th style="text-align: right;">County</th>
@@ -35,8 +35,6 @@
         @empty
             <tr>No results found in database.</tr>
         @endforelse
-    </table>
-
-    
+    </table>    
     </body>
 </html>

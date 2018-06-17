@@ -11,7 +11,7 @@
         <style>
             html, body {
                 background-color: #fff;
-                color: #636b6f;
+                color: #666;
                 height: 100vh;
                 margin: 0;
             }
@@ -20,8 +20,15 @@
             }
             th, td {
                 padding: 3px;
-                border: 1px dotted #666;
+                border: 1px dotted #333;
                 border-collapse: collapse;
+            }
+            th, .heading {
+                background-color: #ffdc00;
+                color: #333;
+            }
+            .summary {
+                background-color: #ff851b;
             }
             .text {
                 text-align: left;
@@ -45,21 +52,21 @@
         </style>
     </head>
     <body>
-    <h1>{{ $party }} Party Candidates</h1>
+    <h3>{{ ucfirst($party) }} Party Candidates</h3>
     <table>
         <tr>
             <th><div class="rotate">Race</div></th>
             <th><div class="rotate">Candidate</div></th>
-            <th><div class="rotate">Total</div></th>
+            <th class="summary"><div class="rotate">Total</div></th>
             @foreach ($counties as $countyColumn)
                 <th class="narrow"><div class="rotate">{{ $countyColumn->name }}</div></th>
             @endforeach
         </tr>
         @forelse ($candidates as $candidateRow)
             <tr>
-                <td class="text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>">{{ $candidateRow->race }}</td>
-                <td class="text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>/candidates/<?=str_replace('"', '_',str_replace('.', '|', $candidateRow->name))?>">{{ $candidateRow->name }}</a></td>
-                <td class="numeric">{{ number_format($candidateRow->sumVotes,0) }}</td>
+                <td class="heading text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>"><?=ucwords(str_replace('-', ' ', str_replace('/', ' ', $candidateRow->race)))?></td>
+                <td class="heading text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>/candidates/<?=str_replace('"', '_',str_replace('.', '|', $candidateRow->name))?>">{{ $candidateRow->name }}</a></td>
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes,0) }}</td>
                 @foreach ($counties as $countyColumn)
                     <?php $found = false; ?>
                     @foreach ($candidateRow->results as $result)

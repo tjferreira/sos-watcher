@@ -15,6 +15,9 @@
                 height: 100vh;
                 margin: 0;
             }
+            table {
+                border-collapse: collapse;
+            }
             th, td {
                 padding: 3px;
                 border: 1px dotted #666;
@@ -30,7 +33,7 @@
                 min-width: 20px;
                 max-width: 20px;
                 width: 20px;
-                height: 200px;
+                height: 120px;
             }
             .rotate {
                 -webkit-transform: rotate(-90deg);

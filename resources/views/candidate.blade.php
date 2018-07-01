@@ -1,27 +1,9 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layout')
 
-        <title>SOS Watcher - {{ $candidate }}</title>
+@section('title', $candidate )
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                height: 100vh;
-                margin: 0;
-            }
-            td {
-                padding: 3px;
-            }
-        </style>
-    </head>
-    <body>
-    <h3>{{ $candidate }}</h3>
+@section('content')
+<h3>{{ $candidate }}</h3>
     <table>
         <tr>
             <th style="text-align: right;">County</th>
@@ -36,5 +18,4 @@
             <tr>No results found in database.</tr>
         @endforelse
     </table>    
-    </body>
-</html>
+@endsection

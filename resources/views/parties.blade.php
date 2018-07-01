@@ -1,36 +1,8 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layout')
 
-        <title>SOS Watcher - Party List</title>
+@section('title', 'Party List' )
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                height: 100vh;
-                margin: 0;
-                padding: 6px;
-            }
-            table {
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 3px;
-                border: 1px dotted #333;
-                border-collapse: collapse;
-            }
-            th, .heading {
-                background-color: #ffdc00;
-                color: #333;
-            }
-        </style>
-    </head>
-    <body>
+@section('content')
         <h3>Political Parties</h3>
         <table>
             <tr>
@@ -73,5 +45,4 @@
                 <tr>No parties found in database.</tr>
             @endforelse
         </table>    
-    </body>
-</html>
+@endsection

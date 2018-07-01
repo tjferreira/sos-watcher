@@ -1,63 +1,33 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layout')
 
-        <title>SOS Watcher - {{ $party }} Party</title>
+@section('title', $party . ' Party List' )
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #666;
-                height: 100vh;
-                margin: 0;
-            }
-            table {
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 3px;
-                border: 1px dotted #333;
-                border-collapse: collapse;
-            }
-            th, .heading {
-                background-color: #ffdc00;
-                color: #333;
-            }
-            .summary {
-                background-color: #ff851b;
-            }
-            .text {
-                text-align: left;
-            }
-            .numeric {
-                text-align: right;
-            }
-            .narrow {
-                min-width: 20px;
-                max-width: 20px;
-                width: 20px;
-                height: 120px;
-            }
-            .rotate {
-                -webkit-transform: rotate(-90deg);
-                -moz-transform: rotate(-90deg);
-                -ms-transform: rotate(-90deg);
-                -o-transform: rotate(-90deg);
-                padding: 0;
-            }
-        </style>
-    </head>
-    <body>
+@section('content')
     <h3>{{ ucfirst($party) }} Party Candidates</h3>
     <table>
         <tr>
             <th><div class="rotate">Race</div></th>
             <th><div class="rotate">Candidate</div></th>
+
             <th class="summary"><div class="rotate">Total</div></th>
+            <th class="summary"><div class="rotate">%</div></th>
+            <th class="summary"><div class="rotate">Turnout</div></th>
+            <th class="summary"><div class="rotate">Candidates In Race</div></th>
+
+            <th>&nbsp;</th>
+
+            <th class="summary"><div class="rotate">1st Curve %</div></th>
+            <th class="summary"><div class="rotate">2nd Curve %</div></th>
+            <th class="summary"><div class="rotate">Median Curve %</div></th>
+            <th class="summary"><div class="rotate">Last Curve %</div></th>
+
+            <th>&nbsp;</th>
+
+            <th class="summary"><div class="rotate">Leader Votes</div></th>
+            <th class="summary"><div class="rotate">Second Votes</div></th>
+            <th class="summary"><div class="rotate">Median</div></th>
+            <th class="summary"><div class="rotate">Last</div></th>
+
             @foreach ($counties as $countyColumn)
                 <th class="narrow"><div class="rotate">{{ $countyColumn->name }}</div></th>
             @endforeach
@@ -66,7 +36,26 @@
             <tr>
                 <td class="heading text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>"><?=ucwords(str_replace('-', ' ', str_replace('/', ' ', $candidateRow->race)))?></td>
                 <td class="heading text"><a href="/races/<?=str_replace('/', '|', $candidateRow->race)?>/candidates/<?=str_replace('"', '_',str_replace('.', '|', $candidateRow->name))?>">{{ $candidateRow->name }}</a></td>
+
                 <td class="numeric summary">{{ number_format($candidateRow->sumVotes,0) }}</td>
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes / $candidateRow->totalVotes * 100,1) }}%</td>
+                <td class="numeric summary">{{ number_format($candidateRow->totalVotes,0) }}</td>
+                <td class="numeric summary">{{ number_format($candidateRow->opponentCount,0) }}</td>
+
+                <td class="heading text">&nbsp;</td>
+
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes/$candidateRow->leader->sumVotes * 100,1) }}%</td>
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes/$candidateRow->secondPlace->sumVotes * 100,1) }}%</td>
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes/$candidateRow->median->sumVotes * 100,1) }}%</td>
+                <td class="numeric summary">{{ number_format($candidateRow->sumVotes/$candidateRow->last->sumVotes * 100,1) }}%</td>
+
+                <td class="heading text">&nbsp;</td>
+
+                <td class="numeric summary">{{ number_format($candidateRow->leader->sumVotes,0) }}</td>
+                <td class="numeric summary">{{ number_format($candidateRow->secondPlace->sumVotes,0) }}</td>
+                <td class="numeric summary">{{ number_format($candidateRow->median->sumVotes,0) }}</td>
+                <td class="numeric summary">{{ number_format($candidateRow->last->sumVotes,0) }}</td>
+
                 @foreach ($counties as $countyColumn)
                     <?php $found = false; ?>
                     @foreach ($candidateRow->results as $result)
@@ -85,7 +74,4 @@
             <tr>No candidates found in database.</tr>
         @endforelse
     </table>
-
-    
-    </body>
-</html>
+@endsection

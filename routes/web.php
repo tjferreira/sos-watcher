@@ -36,6 +36,28 @@ Route::get('/parties/{party}', function ($party) {
             $sumVotes += $result->votes;
         }
         $candidate->sumVotes = $sumVotes;
+        $opponents = DB::table('candidates')
+        ->select('candidates.name', 'candidates.party', 'candidates.race', DB::raw('sum(results.votes) as sumVotes'))
+        ->where('race', $candidate->race)
+        ->leftJoin('results', 'candidates.id', '=', 'results.candidate_id')
+        ->orderBy('sumVotes', 'dsc')
+        ->groupBy('candidates.name', 'candidates.party', 'candidates.race')
+        ->get();
+        $candidate->opponentCount = count($opponents);
+        $candidate->leader = $opponents[0];
+        if(count($opponents) > 1) {
+            $candidate->secondPlace = $opponents[1];
+        } else {
+            $candidate->secondPlace = $opponents[0];
+        }
+        $candidate->median = $opponents[floor(count($opponents)/2)];
+        $candidate->last = $opponents[count($opponents)-1];
+
+        $totalVotes = 0;
+        foreach($opponents as $opponent) {
+            $totalVotes = $totalVotes + $opponent->sumVotes;
+        }
+        $candidate->totalVotes = $totalVotes;
     }
     $counties = App\County::get();
     $data = compact('party', 'candidates', 'counties');
@@ -53,11 +75,11 @@ Route::get('/races/{race}', function ($race) {
     //Race details
     $race = str_replace('|', '/', $race);
     $candidates = DB::table('candidates')
-        ->select('candidates.name', 'candidates.race', DB::raw('sum(results.votes) as sumVotes'))
+        ->select('candidates.name', 'candidates.party', 'candidates.race', DB::raw('sum(results.votes) as sumVotes'))
         ->where('race', $race)
         ->leftJoin('results', 'candidates.id', '=', 'results.candidate_id')
         ->orderBy('sumVotes', 'dsc')
-        ->groupBy('candidates.name', 'candidates.race')
+        ->groupBy('candidates.name', 'candidates.party', 'candidates.race')
         ->get();
     $totalVotes = 0;
     foreach($candidates as $candidate) {

@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('digistack:check-sos')->everyFiveMinutes()->withoutOverlapping();
+        //$schedule->command('digistack:check-sos')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**
